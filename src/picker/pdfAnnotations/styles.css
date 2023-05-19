@@ -1,0 +1,216 @@
+.base {
+  --sidebar-width: 200px;
+  --toolbar-height: 40px;
+  --btn-padding-y: 5px;
+  --btn-padding-x: 16px;
+  --btn-font-size: 14px;
+  --btn-color: #24292f;
+  --btn-bg: #f6f8fa;
+  --btn-hover-bg: #f3f4f6;
+  --btn-active-bg: #ebecf0;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+.toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--toolbar-height);
+  background-color: #000;
+  text-align: center;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 50%);
+  z-index: 1;
+}
+.toolbar-btn {
+  height: 100%;
+  border: none;
+  background: none;
+  padding: .5rem .75rem;
+  cursor: pointer;
+  color: #fff;
+  user-select: none;
+}
+.toolbar-btn.selected {
+  background-color: #0969da;
+}
+.toolbar-btn > svg {
+  vertical-align: -3px;
+}
+.toolbar-popover {
+  position: absolute;
+  top: var(--toolbar-height);
+  background-color: #000;
+  padding: .5rem 1rem;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+  z-index: 1;
+  gap: 10px;
+  box-shadow: 0px 4px 4px rgb(0 0 0 / 50%);
+}
+.toolbar-popover select, .toolbar-popover input {
+  height: 100%;
+  border-radius: 0;
+  border: none;
+}
+.sidebar {
+  overflow-y: auto;
+  background-color: #fff;
+  width: var(--sidebar-width);
+  border-top: var(--toolbar-height) solid #000;
+  padding: .5rem;
+}
+.page-container {
+  background-color: #e8e8e8;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  margin-top: var(--toolbar-height);
+  position: relative;
+}
+.page {
+  margin: 2rem auto;
+  padding: 0 2rem;
+  max-width: 2000px;
+}
+.page-bg {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.measure {
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  overflow: scroll;
+}
+.object {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  cursor: pointer;
+  font-size: 0;
+  user-select: none;
+}
+.object-image {
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.textarea {
+  outline: none;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.2;
+}
+.control {
+  position: absolute;
+  cursor: move;
+  z-index: 1;
+}
+.control-handle {
+  position: absolute;
+  background-color: white;
+  border: 2px solid #0969da;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  user-select: none;
+}
+.modal-backdrop {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+.modal-backdrop-trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.modal {
+  position: absolute;
+  z-index: 1;
+  max-width: 1000px;
+  background-color: #fff;
+  top: 10vh;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  right: 0;
+  margin: auto;
+  outline: 1px solid #000;
+}
+.modal-title {
+  flex: 1;
+}
+.signature-pad {
+  cursor: crosshair;
+  position: relative;
+  font-size: 0;
+  background-color: white;
+}
+.signature-pad > canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.signature-pad-bg {
+  position: absolute;
+  height: 50%;
+  width: 100%;
+  border-bottom: 2px dashed black;
+}
+
+.btn {
+  --btn-padding-y: 0.375rem;
+  --btn-padding-x: 0.75rem;
+  --btn-font-size: 1rem;
+  display: inline-block;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  font-size: var(--btn-font-size);
+  color: var(--btn-color);
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background-color: var(--btn-bg);
+}
+.btn:hover {
+  background-color: var(--btn-hover-bg);
+  color: var(--btn-color);
+}
+.btn:active, .btn.active {
+  background-color: var(--btn-active-bg);
+}
+.btn-primary {
+  --btn-color: #fff;
+  --btn-bg: #0969da;
+  --btn-hover-bg: #0a58ca;
+  --btn-active-bg: #0a58ca;
+}
+.btn-link {
+  --btn-color: #0969da;
+  --btn-bg: transparent;
+  --btn-hover-bg: transparent;
+  --btn-active-bg: transparent;
+}

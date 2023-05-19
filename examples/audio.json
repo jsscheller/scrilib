@@ -1,0 +1,42 @@
+[
+  {
+    "description": "Convert an audio file to MP3.",
+    "input": {
+      "audio": "file://../assets/sample.ogg",
+      "format": {
+        "type": "MP3"
+      }
+    },
+    "key": "convert"
+  },
+  {
+    "description": "Combine two audio files.",
+    "input": {
+      "chunks": [
+        {
+          "audio": "file://../assets/sample.ogg",
+          "end_time": "2"
+        },
+        {
+          "audio": "file://../assets/sample.ogg",
+          "start_time": "2",
+          "end_time": "8"
+        }
+      ],
+      "format": {
+        "type": "MP3"
+      }
+    },
+    "key": "merge"
+  },
+  {
+    "description": "Trim an audio file.",
+    "input": {
+      "audio": "file://../assets/sample.ogg",
+      "trim": {
+        "end_time": "2"
+      }
+    },
+    "key": "trim"
+  }
+]

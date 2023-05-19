@@ -1,0 +1,27 @@
+{
+  "name": "@scrilib",
+  "version": "0.1.0",
+  "description": "an easy-to-use scripting library",
+  "type": "module",
+  "main": "cjs.js",
+  "module": "esm.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha.js tests",
+    "build": "node scripts/build.js"
+  },
+  "dependencies": {
+    "@jspawn/jspawn": "^0.5.0"
+  },
+  "devDependencies": {
+    "@jspawn/ffmpeg-wasm": "^0.0.1",
+    "@jspawn/ghostscript-wasm": "^0.0.2",
+    "@jspawn/imagemagick-wasm": "^0.1.1",
+    "@jspawn/pdfr-wasm": "^0.0.3",
+    "@jspawn/qpdf-wasm": "^0.0.2",
+    "@jspawn/tesseract-wasm": "^0.0.1",
+    "esbuild": "^0.17.19",
+    "mocha": "^10.0.0",
+    "typescript": "^4.9.5"
+  }
+}

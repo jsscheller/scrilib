@@ -1,0 +1,130 @@
+*,*::before,*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--fg-default);
+  background-color: var(--bg-default);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, input, optgroup, select, textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+label {
+  display: inline-block;
+}
+
+h1,h2,h3,h4,h5,h6, {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  font-size: 12px;
+}
+
+small {
+  font-size: 12px;
+}
+
+a {
+  color: var(--link-fg);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-fg-hover);
+  text-decoration: underline;
+}
+
+button {
+  -webkit-appearance: button;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+button, select {
+  text-transform: none;
+}
+
+p {
+  margin: 0;
+}
+
+dl, ol, ul {
+  margin: 0;
+}
+
+ol, ul {
+  padding-left: 16px;
+}
+
+code, kbd, pre, samp {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+pre {
+  display: block;
+  margin: 0;
+  overflow: auto;
+}
+
+hr {
+  margin: 0;
+  color: inherit;
+  border: 0;
+  border-top: 1px solid;
+  opacity: 0.25;
+}
+
+iframe {
+  border: 0;
+}
+
+table {
+  caption-side: bottom;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: inherit;
+  text-align: -webkit-match-parent;
+}
+
+thead,tbody,tfoot,tr,td,th {
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+}
