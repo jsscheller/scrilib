@@ -9,3 +9,5 @@ export { main as render } from "./render.js";
 export { main as repage } from "./repage.js";
 export { main as rotate } from "./rotate.js";
 export { main as split } from "./split.js";
+
+export * as shared from "./shared.js";

@@ -55,13 +55,15 @@ export async function parsePageSelection(
     return (pageCount = await getPageCount(path, venv));
   };
   try {
-    const items = s.split(",");
+    const segs = s.split(",").map((x) => x.trim());
     let parsed = [];
-    for (const item of items) {
-      if (item.includes(dotdot)) {
-        const [startS, endS] = item.split(dotdot);
-        const start = await parsePageNumber(startS, getCachedPageCount);
-        const end = await parsePageNumber(endS, getCachedPageCount);
+    for (const seg of segs) {
+      if (seg.includes(dotdot)) {
+        const split = seg.split(dotdot);
+        const startRaw = seg.startsWith(dotdot) ? "1" : split[0];
+        const start = await parsePageNumber(startRaw, getCachedPageCount);
+        const endRaw = seg.endsWith(dotdot) ? "-1" : split.pop()!;
+        const end = await parsePageNumber(endRaw, getCachedPageCount);
         if (start < end) {
           for (let i = start; i <= end; i++) {
             parsed.push(i);
@@ -72,7 +74,7 @@ export async function parsePageSelection(
           }
         }
       } else {
-        const n = await parsePageNumber(s, getCachedPageCount);
+        const n = await parsePageNumber(seg, getCachedPageCount);
         parsed.push(n);
       }
     }
