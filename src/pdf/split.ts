@@ -103,7 +103,11 @@ export async function main(input: Input): Promise<File[]> {
   return pdfs;
 }
 
-export async function map_picker_input(pdf: File): Promise<PickerInput> {
+export async function map_picker_input({
+  pdf,
+}: {
+  pdf: File;
+}): Promise<PickerInput> {
   return {
     pdfs: [pdf],
     allow_move: true,
@@ -112,9 +116,11 @@ export async function map_picker_input(pdf: File): Promise<PickerInput> {
   };
 }
 
-export async function map_picker_output(
-  output: PickerOutput
-): Promise<string[]> {
+export async function map_picker_output({
+  output,
+}: {
+  output: PickerOutput;
+}): Promise<string[]> {
   return output.pdfs.map((pdf) => {
     return simplifyPageSelection(pdf.pages.map((x) => x.page));
   });

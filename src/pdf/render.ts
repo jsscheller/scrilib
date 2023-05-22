@@ -69,7 +69,11 @@ function mul4(n: any) {
   return Math.floor(n / 4) * 4;
 }
 
-export async function map_picker_input(pdf: File): Promise<PickerInput> {
+export async function map_picker_input({
+  pdf,
+}: {
+  pdf: File;
+}): Promise<PickerInput> {
   return {
     pdfs: [pdf],
     allow_move: true,
@@ -77,6 +81,10 @@ export async function map_picker_input(pdf: File): Promise<PickerInput> {
   };
 }
 
-export async function map_picker_output(output: PickerOutput): Promise<string> {
+export async function map_picker_output({
+  output,
+}: {
+  output: PickerOutput;
+}): Promise<string> {
   return simplifyPageSelection(output.pdfs[0]!.pages.map((x) => x.page));
 }

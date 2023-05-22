@@ -109,16 +109,22 @@ function normAngle(deg: number): number {
   return deg;
 }
 
-export async function map_picker_input(pdf: File): Promise<PickerInput> {
+export async function map_picker_input({
+  pdf,
+}: {
+  pdf: File;
+}): Promise<PickerInput> {
   return {
     pdfs: [pdf],
     allow_rotate: true,
   };
 }
 
-export async function map_picker_output(
-  output: PickerOutput
-): Promise<PageRotation[]> {
+export async function map_picker_output({
+  output,
+}: {
+  output: PickerOutput;
+}): Promise<PageRotation[]> {
   const grouped: { [key: string]: number[] } = {};
   for (const page of output.pdfs[0].pages) {
     if (page.rotate != null) {

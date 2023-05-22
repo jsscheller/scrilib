@@ -1,13 +1,24 @@
 export { main as annotate } from "./annotate.js";
+export * as _annotate from "./annotate.js";
 export { main as compress } from "./compress.js";
+export * as _compress from "./compress.js";
 export { main as decrypt } from "./decrypt.js";
+export * as _decrypt from "./decrypt.js";
 export { main as encrypt } from "./encrypt.js";
+export * as _encrypt from "./encrypt.js";
 export { main as extractImages } from "./extractImages.js";
+export * as _extractImages from "./extractImages.js";
 export { main as fromImages } from "./fromImages.js";
+export * as _fromImages from "./fromImages.js";
 export { main as merge } from "./merge.js";
+export * as _merge from "./merge.js";
 export { main as render } from "./render.js";
+export * as _render from "./render.js";
 export { main as repage } from "./repage.js";
+export * as _repage from "./repage.js";
 export { main as rotate } from "./rotate.js";
+export * as _rotate from "./rotate.js";
 export { main as split } from "./split.js";
+export * as _split from "./split.js";
 
 export * as shared from "./shared.js";
