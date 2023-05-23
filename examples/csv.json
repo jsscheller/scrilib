@@ -69,5 +69,21 @@
       }
     },
     "key": "fill"
+  },
+  {
+    "description": "Pad a CSV to have matching column lengths.",
+    "input": {
+      "csv": "file://../assets/sample.csv",
+      "length": 4
+    },
+    "key": "pad"
+  },
+  {
+    "description": "Calculate the frequency of data in a CSV.",
+    "input": {
+      "csv": "file://../assets/us-states.csv",
+      "select": "/tax/i"
+    },
+    "key": "freq"
   }
 ]

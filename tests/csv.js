@@ -19,6 +19,7 @@ describe("csv", function () {
     };
 
     assert.strictEqual(await testSyntax("1"), "0");
+    assert.strictEqual(await testSyntax("1,2"), "0,1");
     assert.strictEqual(await testSyntax("-1"), "2");
     assert.strictEqual(await testSyntax("-2"), "1");
     assert.strictEqual(await testSyntax("1..2"), "0,1");
