@@ -12,6 +12,7 @@ const entryPoints = [
   "src/audio/index.ts",
   "src/image/index.ts",
   "src/pdf/index.ts",
+  "src/csv/index.ts",
   "src/picker/pdfAnnotations/index.ts",
   "src/picker/pdfPages/index.ts",
   "src/viewer/image/index.ts",
