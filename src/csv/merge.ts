@@ -25,7 +25,7 @@ export type ColumnMerge = {
 export type RowMerge = {
   type: Merge.Row;
   /** Use this option if your input files do not have headers. Enabling this option requires all input files have the same number of columns. */
-  no_headers: boolean;
+  no_headers?: boolean;
 };
 
 /** Merge CSV files. */

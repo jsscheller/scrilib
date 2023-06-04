@@ -14,5 +14,7 @@ export { main as pad } from "./pad.js";
 export * as _pad from "./pad.js";
 export { main as freq } from "./freq.js";
 export * as _freq from "./freq.js";
+export { main as fill } from "./fill.js";
+export * as _fill from "./fill.js";
 
 export * as shared from "./shared.js";

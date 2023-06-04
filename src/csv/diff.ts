@@ -40,7 +40,7 @@ export type Input = {
 export type DiffFile = {
   csv: File;
   /** When set to `true`, the first row will be considered when diffing. */
-  no_headers: boolean;
+  no_headers?: boolean;
 };
 
 /** Determine differences between two CSV files. */

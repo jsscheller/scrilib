@@ -5,7 +5,7 @@ export type Input = {
   /** The CSV file to count. */
   csv: File;
   /** The first row is assumed to be headers - enable this option to include the first row in the count. */
-  no_headers: boolean;
+  no_headers?: boolean;
 };
 
 /** Count the number of records in a CSV file. The count does not include the header row by default. */

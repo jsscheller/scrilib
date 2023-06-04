@@ -38,7 +38,7 @@ export type AlphabeticSort = {
   sort_columns?: string;
   /** Disregard case when comparing. */
   ignore_case?: boolean;
-  /** Rows are in ascending order (a..z) by default, set to `true` to reverse to descending order (z..a). */
+  /** Rows are in ascending order (A to Z) by default, set to `true` for descending order (Z to A). */
   reverse?: boolean;
 };
 
@@ -60,7 +60,7 @@ export type NumericSort = {
    * | `/foo/i` | columns containing `foo` (ignoring case) |
    */
   sort_columns?: string;
-  /** Rows are in ascending order (1..9) by default, set to `true` to reverse to descending order (9..1). */
+  /** Rows are in ascending order (1 to 9) by default, set to `true` for descending order (9 to 1). */
   reverse?: boolean;
 };
 

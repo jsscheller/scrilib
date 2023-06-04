@@ -20,7 +20,7 @@ export type Input = {
    * | `/foo/i` | columns containing `foo` (ignoring case) |
    */
   select?: string;
-  /** Limit the output to a fixed number of values per column. */
+  /** Limit the output to a fixed number of values per column. Defaults to `10`. */
   limit?: integer;
   /** Sort the results in ascending order instead of descending. */
   ascending?: boolean;
@@ -41,7 +41,7 @@ export async function main(input: Input): Promise<Frequency[]> {
   const out = "freq.csv";
   const args = ["frequency", "--output", out];
 
-  args.push("--limit", (input.limit || 0).toString());
+  args.push("--limit", (input.limit || 10).toString());
 
   if (input.select) {
     const sel = await parseColumnSelection(
