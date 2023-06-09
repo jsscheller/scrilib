@@ -1,10 +1,36 @@
+/**
+ * Annotate a PDF - add images, text and signatures.
+ *
+ * ### Examples
+ *
+ * sample.pdf
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
+import "file:../colors.css";
+import "file:../normalize.css";
+import "file:./styles.css";
+import "file:./index.html";
+import "file:../../initListener.js";
 import { VirtualEnv } from "@jspawn/jspawn";
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import pdfr from "file:@jspawn/pdfr-wasm/pdfr.wasm";
 import { initVirtualEnv } from "../../util.js";
-import colorsCSS from "file:../colors.css";
-import normalizeCSS from "file:../normalize.css";
-import stylesCSS from "file:./styles.css";
+
+export type Input = {
+  pdf: File;
+};
+
+export function value(): AnnotationU[] {
+  return PDF_ANNOTATIONS!.value();
+}
 
 const PPI = 72;
 const MIN_TEXTAREA_WIDTH = 10;
@@ -26,10 +52,6 @@ const ICON_PLUS = [
 const ICON_CHECK = [
   `<path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>`,
 ];
-
-export type Input = {
-  pdf: File;
-};
 
 export type AnnotationU = ImageAnnotation | TextAnnotation;
 
@@ -191,22 +213,25 @@ type TextareaStyle = {
   textAlign: string;
 };
 
-/** Annotate a PDF - add images, text and signatures. */
-export default class PDFAnnotations extends HTMLElement {
+let PDF_ANNOTATIONS: PDFAnnotations | undefined;
+
+export async function init(input: Input) {
+  PDF_ANNOTATIONS = new PDFAnnotations(input, document.body);
+}
+
+class PDFAnnotations {
   input: Input;
   pages: PageState[];
   annots: AnnotationStateU[];
   tools: ToolU[];
   images: ImageState[];
   sigs: ImageState[];
-  deps: Set<string>;
   base: HTMLElement;
   sigPad?: SignaturePad;
   isMouseDown?: boolean;
   moveState!: MoveState;
   isControlHandle?: boolean;
   controlTarget?: HTMLElement;
-  connected?: boolean;
   animationFrame?: number;
   pageCount?: number;
   sel!: AnnotationStateU;
@@ -228,18 +253,15 @@ export default class PDFAnnotations extends HTMLElement {
   toolImageEl?: HTMLSelectElement;
   toolSigEl?: HTMLSelectElement;
 
-  constructor(input: Input) {
-    super();
+  constructor(input: Input, slotEl: HTMLElement) {
     this.input = input;
     this.pages = [];
     this.annots = [];
     this.tools = [];
     this.images = [];
     this.sigs = [];
-    this.deps = new Set([colorsCSS, normalizeCSS, stylesCSS]);
     this.base = Object.assign(document.createElement("div"), {
       className: "base",
-      style: "display:none",
     });
     this.pageContainerEl = Object.assign(document.createElement("div"), {
       className: "page-container",
@@ -257,25 +279,16 @@ export default class PDFAnnotations extends HTMLElement {
     this.renderToolbar();
     this.base.append(this.toolbarEl, this.pageContainerEl, this.measureEl);
 
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot!.append(
-      ...Array.from(this.deps.values()).map((href) =>
-        Object.assign(document.createElement("link"), {
-          rel: "stylesheet",
-          href,
-          onload: () => {
-            this.deps.delete(href);
-            this.connectedCallback();
-          },
-        })
-      ),
-      this.base
-    );
+    slotEl.append(this.base);
 
     window.addEventListener("mousedown", this.onMouseDown.bind(this));
     window.addEventListener("mousemove", this.onMouseMove.bind(this));
     window.addEventListener("mouseup", this.onMouseUp.bind(this));
     window.addEventListener("keydown", this.onKeyDown.bind(this));
+
+    this.pageContainerEl.addEventListener("scroll", this.onScroll.bind(this));
+    this.requestRender();
+    this.selectTool(Tool.Move);
   }
 
   renderToolbar() {
@@ -693,17 +706,6 @@ export default class PDFAnnotations extends HTMLElement {
     this.toolTextAlignEl!.innerHTML = svg(TEXT_ALIGNS[target.textAlign], 1.2);
   }
 
-  connectedCallback() {
-    if (this.deps.size || this.connected) return;
-    this.connected = true;
-
-    this.base.style.display = "";
-
-    this.pageContainerEl.addEventListener("scroll", this.onScroll.bind(this));
-    this.requestRender();
-    this.selectTool(Tool.Move);
-  }
-
   value(): AnnotationU[] {
     let out: AnnotationU[] = [];
     for (const annot of this.annots) {
@@ -1032,8 +1034,8 @@ export default class PDFAnnotations extends HTMLElement {
 
   isEditingTextarea() {
     return (
-      this.shadowRoot!.activeElement &&
-      this.shadowRoot!.activeElement.classList.contains("textarea")
+      document.activeElement &&
+      document.activeElement.classList.contains("textarea")
     );
   }
 

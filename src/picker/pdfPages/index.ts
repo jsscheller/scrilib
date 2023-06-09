@@ -1,3 +1,26 @@
+/**
+ * Page picker for PDFs - select, move, rotate, delete and split.
+ *
+ * ### Examples
+ *
+ * sample.pdf
+ *
+ * ```
+ * {
+ *   "pdfs": [{ "$file": "/assets/sample.pdf" }],
+ *   "allow_select": true,
+ *   "allow_move": true
+ * }
+ * ```
+ *
+ * @module
+ */
+
+import "file:../colors.css";
+import "file:../normalize.css";
+import "file:./styles.css";
+import "file:./index.html";
+import "file:../../initListener.js";
 import { VirtualEnv } from "@jspawn/jspawn";
 import { initVirtualEnv } from "../../util.js";
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
@@ -7,9 +30,6 @@ import { PageToolbar } from "./pageToolbar.js";
 import { Move } from "./move.js";
 import { Split } from "./split.js";
 import * as icons from "./icons.js";
-import colorsCSS from "file:../colors.css";
-import normalizeCSS from "file:../normalize.css";
-import stylesCSS from "file:./styles.css";
 
 export type Input = {
   pdfs: File[];
@@ -24,6 +44,10 @@ export type Input = {
 export type Output = {
   pdfs: OutputPDF[];
 };
+
+export function value(): Output {
+  return PDF_PAGES!.value();
+}
 
 export type OutputPDF = {
   pages: OutputPage[];
@@ -61,12 +85,15 @@ export type Point = {
   y: number;
 };
 
-/** Page picker for PDFs - select, move, rotate, delete and split. */
-export default class PDFPages extends HTMLElement {
+let PDF_PAGES: PDFPages | undefined;
+
+export async function init(input: Input) {
+  PDF_PAGES = new PDFPages(input, document.body);
+}
+
+class PDFPages {
   input: Input;
-  deps: Set<string>;
   dims: Dimensions;
-  connected?: boolean;
   newPDFs: File[];
   pdfs: PDF[];
   pages: Page[];
@@ -87,13 +114,8 @@ export default class PDFPages extends HTMLElement {
   insertDocEl: HTMLElement;
   insertDocFileInputEl: HTMLInputElement;
 
-  constructor(input: Input) {
-    super();
-
-    this.attachShadow({ mode: "open" });
-
+  constructor(input: Input, slotEl: HTMLElement) {
     this.input = input;
-    this.deps = new Set([colorsCSS, normalizeCSS, stylesCSS]);
     const pageWidth = 200;
     this.dims = {
       pageWidth,
@@ -106,24 +128,10 @@ export default class PDFPages extends HTMLElement {
     this.pages = [];
     this.idInc = 0;
     this.pageToolbar = new PageToolbar(input, this);
-    this.move = new Move(this.pages, this.dims, this.shadowRoot!, this);
-
-    for (const href of this.deps.values()) {
-      this.shadowRoot!.append(
-        Object.assign(document.createElement("link"), {
-          rel: "stylesheet",
-          href,
-          onload: () => {
-            this.deps.delete(href);
-            this.connectedCallback();
-          },
-        })
-      );
-    }
+    this.move = new Move(this.pages, this.dims, this);
 
     this.baseEl = Object.assign(document.createElement("div"), {
       className: "base",
-      style: "display:none",
       onmousemove: this.onMouseMove.bind(this),
       onmousedown: this.onMouseDown.bind(this),
       onmouseup: this.onMouseUp.bind(this),
@@ -172,14 +180,8 @@ export default class PDFPages extends HTMLElement {
       this.move.ghostEl,
       this.move.indicatorEl
     );
-    this.shadowRoot!.append(this.baseEl);
-  }
+    slotEl.append(this.baseEl);
 
-  async connectedCallback() {
-    if (this.deps.size || this.connected) return;
-    this.connected = true;
-
-    this.baseEl.style.display = "";
     this.requestRender();
   }
 
@@ -422,7 +424,7 @@ export default class PDFPages extends HTMLElement {
     delete this.toolbarPage;
     this.renderToolbar();
 
-    const el = this.shadowRoot!.elementFromPoint(e.x, e.y);
+    const el = document.elementFromPoint(e.x, e.y);
     if (el) {
       const pageEl = pageElForTarget(el);
       if (pageEl) {

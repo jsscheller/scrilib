@@ -1,47 +1,49 @@
+/**
+ * View/zoom/pan images. Supports several image formats.
+ *
+ * ### Examples
+ *
+ * tree.jpg
+ *
+ * ```
+ * {
+ *   "image": { "$file": "/assets/tree.jpg" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
+import "file:../../picker/colors.css";
+import "file:../../picker/normalize.css";
+import "file:./styles.css";
+import "file:./index.html";
+import "file:../../initListener.js";
 import { initVirtualEnv } from "../../util.js";
 import { PinchZoom } from "./pinchZoom.js";
 import magick from "file:@jspawn/imagemagick-wasm/magick.wasm";
-import colorsCSS from "file:../../picker/colors.css";
-import normalizeCSS from "file:../../picker/normalize.css";
-import stylesCSS from "file:./styles.css";
 
 export type Input = {
   image: File;
 };
 
-/** View/zoom/pan images. Supports several image formats.  */
-export default class ImageViewer extends HTMLElement {
+export async function init(input: Input) {
+  const imageViewer = new ImageViewer(input, document.body);
+  await imageViewer.render();
+}
+
+class ImageViewer {
   input: Input;
-  deps: Set<string>;
-  connected?: boolean;
   baseEl: HTMLElement;
   statusEl: HTMLElement;
   pinchZoom: PinchZoom;
   canvasEl: HTMLCanvasElement;
 
-  constructor(input: Input) {
-    super();
-
-    this.attachShadow({ mode: "open" });
-
+  constructor(input: Input, slotEl: HTMLElement) {
     this.input = input;
-    this.deps = new Set([colorsCSS, normalizeCSS, stylesCSS]);
-    for (const href of this.deps.values()) {
-      this.shadowRoot!.append(
-        Object.assign(document.createElement("link"), {
-          rel: "stylesheet",
-          href,
-          onload: () => {
-            this.deps.delete(href);
-            this.connectedCallback();
-          },
-        })
-      );
-    }
 
     this.baseEl = Object.assign(document.createElement("div"), {
       className: "base",
-      style: "display:none",
     });
     this.statusEl = Object.assign(document.createElement("div"), {
       className: "status",
@@ -57,15 +59,7 @@ export default class ImageViewer extends HTMLElement {
     });
 
     this.baseEl.append(this.pinchZoom.baseEl, statusContainerEl);
-    this.shadowRoot!.append(this.baseEl);
-  }
-
-  connectedCallback() {
-    if (this.deps.size || this.connected) return;
-    this.connected = true;
-
-    this.baseEl.style.display = "";
-    this.render();
+    slotEl.append(this.baseEl);
   }
 
   async render() {

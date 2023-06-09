@@ -13,7 +13,6 @@ type Delegate = {
 export class Move {
   pages: Page[];
   dims: Dimensions;
-  shadowRoot: ShadowRoot;
   del: Delegate;
   active?: Page;
   startPoint?: Point;
@@ -23,15 +22,9 @@ export class Move {
   ghostEl: HTMLElement;
   indicatorEl: HTMLElement;
 
-  constructor(
-    pages: Page[],
-    dims: Dimensions,
-    shadowRoot: ShadowRoot,
-    del: Delegate
-  ) {
+  constructor(pages: Page[], dims: Dimensions, del: Delegate) {
     this.pages = pages;
     this.dims = dims;
-    this.shadowRoot = shadowRoot;
     this.del = del;
     this.ghostEl = Object.assign(document.createElement("div"), {
       style: "display: none",
@@ -101,7 +94,7 @@ export class Move {
     const x = pt.x;
     for (const dx of [-this.dims.gap, this.dims.gap]) {
       pt.x = x + dx;
-      const el = this.shadowRoot.elementFromPoint(pt.x, pt.y);
+      const el = document.elementFromPoint(pt.x, pt.y);
       if (el) {
         const pageEl = pageElForTarget(el);
         if (pageEl) return pageEl;
