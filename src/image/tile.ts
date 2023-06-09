@@ -1,3 +1,26 @@
+/**
+ * Tile images together.
+ *
+ * ### Examples
+ *
+ * Layout images in a tile pattern.
+ *
+ * ```
+ * {
+ *   "images": [
+ *     { "$file": "/assets/tree.jpg" },
+ *     { "$file": "/assets/cat.png" },
+ *     { "$file": "/assets/tree.jpg" },
+ *     { "$file": "/assets/cat.png" }
+ *   ],
+ *   "rows": 2,
+ *   "columns": 2
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import magick from "file:@jspawn/imagemagick-wasm/magick.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -25,7 +48,6 @@ export const enum Format {
   JPG = "JPG",
 }
 
-/** Tile images together. */
 export async function main(input: Input): Promise<File> {
   if (input.images.length === 0) {
     throw "expected at least one image";

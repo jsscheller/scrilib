@@ -1,3 +1,19 @@
+/**
+ * Reduce the size of a PDF.
+ *
+ * ### Examples
+ *
+ * Compress a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import gs from "file:@jspawn/ghostscript-wasm/gs.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
@@ -7,7 +23,6 @@ export type Input = {
   pdf: File;
 };
 
-/** Reduce the size of a PDF. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 

@@ -1,3 +1,22 @@
+/**
+ * Convert between audio formats.
+ *
+ * ### Examples
+ *
+ * Convert an audio file to MP3.
+ *
+ * ```
+ * {
+ *   "audio": { "$file": "/assets/sample.ogg" },
+ *   "format": {
+ *     "type": "MP3"
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import ffmpeg from "file:@jspawn/ffmpeg-wasm/ffmpeg.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import { pushFormatArgs } from "./shared.js";
@@ -200,7 +219,6 @@ export type WMAV2Codec = {
   quality?: integer;
 };
 
-/** Convert between audio formats. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ audio: input.audio });
 

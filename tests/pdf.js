@@ -1,14 +1,13 @@
 import * as assert from "assert";
 import * as path from "path";
 import * as url from "url";
-import examples from "../examples/pdf.json" assert { type: "json" };
 import { runExamples } from "./shared.js";
 import * as scrilib from "../out/scrilib/esm.js";
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 describe("pdf", function () {
-  runExamples("pdf", examples, it);
+  runExamples("pdf", it);
 
   it("page selection syntax", async function () {
     const { paths, venv } = await scrilib.util.initVirtualEnv({

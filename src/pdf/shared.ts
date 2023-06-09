@@ -37,17 +37,20 @@ export async function getPageCount(
   return parseInt(output.stdout);
 }
 
-export const enum Filter {
-  Even,
-  Odd,
-}
-
 export async function parsePageSelection(
   s: string,
   path: string,
-  venv: VirtualEnv,
-  filter?: Filter
+  venv: VirtualEnv
 ): Promise<string> {
+  const sel = await parsePageSelectionArray(s, path, venv);
+  return sel.join(",");
+}
+
+export async function parsePageSelectionArray(
+  s: string,
+  path: string,
+  venv: VirtualEnv
+): Promise<number[]> {
   const dotdot = "..";
   let pageCount: number;
   const getCachedPageCount = async () => {
@@ -78,16 +81,7 @@ export async function parsePageSelection(
         parsed.push(n);
       }
     }
-    if (filter) {
-      parsed = parsed.filter((n) => {
-        const even = n % 2 === 0;
-        if (filter === Filter.Odd) {
-          return !even;
-        }
-        return even;
-      });
-    }
-    return parsed.join(",");
+    return parsed;
   } catch (_) {
     throw "Invalid page-selection syntax.";
   }

@@ -1,3 +1,23 @@
+/**
+ * Convert between image formats.
+ *
+ * ### Examples
+ *
+ * Convert an image to PNG.
+ *
+ * ```
+ * {
+ *   "image": { "$file": "/assets/tree.jpg" },
+ *   "format": {
+ *     "type": "PNG",
+ *     "compression": 1
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import magick from "file:@jspawn/imagemagick-wasm/magick.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -81,7 +101,6 @@ export type JPGFormat = {
   quality?: integer;
 };
 
-/** Convert between image formats. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ image: input.image });
   const args = [paths.image];

@@ -1,3 +1,22 @@
+/**
+ * Encrypt a PDF.
+ *
+ * Note: encrypting a PDF and password-protecting a PDF are two different things. Learn more [here](./#pdf-encryption-vs-password-protecting).
+ *
+ * ### Examples
+ *
+ * Lock a PDF using a password.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "password": "password123"
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -10,10 +29,7 @@ export type Input = {
    * Learn more about PDF encryption [here](https://qpdf.readthedocs.io/en/latest/encryption.html).
    */
   encryption?: Encryption;
-  /**
-   * Optionally encrypt using a password.
-   * PDF encryption and password protection are two different things. Learn more [here](https://qpdf.readthedocs.io/en/latest/encryption.html).
-   */
+  /** Optionally encrypt using a password. */
   password?: string;
 };
 
@@ -22,7 +38,6 @@ export const enum Encryption {
   AES128 = "AES128",
 }
 
-/** Encrypt a PDF. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 

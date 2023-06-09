@@ -1,3 +1,22 @@
+/**
+ * Add a border to an image while keeping its dimensions the same.
+ *
+ * ### Examples
+ *
+ * Rotate an image by 90 degrees clockwise.
+ *
+ * ```
+ * {
+ *   "image": { "$file": "/assets/tree.jpg" },
+ *   "color": "#ff9933",
+ *   "width": 10,
+ *   "placement": "Inside"
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import magick from "file:@jspawn/imagemagick-wasm/magick.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -28,7 +47,6 @@ export const enum Placement {
   Center = "Center",
 }
 
-/** Add a solid border around an image. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ image: input.image });
 

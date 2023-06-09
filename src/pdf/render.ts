@@ -1,3 +1,19 @@
+/**
+ * Convert PDF to image - only JPEG supported at this time.
+ *
+ * ### Examples
+ *
+ * Render each page of a PDF to an image.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import pdfr from "file:@jspawn/pdfr-wasm/pdfr.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type {
@@ -10,20 +26,7 @@ export type Input = {
   /** The PDF to convert. */
   pdf: File;
   /**
-   * Optionally specify the pages to render - all pages are rendered by default.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,6,4` | pages 1, 6, and 4 |
-   * | `3..7` | pages 3 through 7 inclusive |
-   * | `7..3` | pages 7, 6, 5, 4, and 3 |
-   * | `1..-1` | all pages |
-   * | `1,3,5..9,15..12` | pages 1, 3, 5, 6, 7, 8, 9, 15, 14, 13, and 12 |
-   * | `-1` | the last page |
-   * | `-1..-3` | the last three pages |
-   * | `5,7..9,12` | pages 5, 7, 8, 9, and 12 |
+   * Optionally specify the pages to render using [page-selection syntax](./#page-selection-syntax) - all pages are rendered by default.
    *
    * {@picker pdfPages map_input=map_picker_input map_output=map_picker_output}
    */
@@ -38,7 +41,6 @@ export type Input = {
   height?: integer;
 };
 
-/** Convert PDF to image - only JPEG supported at this time. */
 export async function main(input: Input): Promise<File[]> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 

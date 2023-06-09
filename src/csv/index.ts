@@ -1,3 +1,20 @@
+/**
+ * ### [Column-selection syntax](#column-selection-syntax)
+ *
+ * Examples:
+ *
+ * |  |  |
+ * | --- | --- |
+ * | `1,4` | first and fourth column |
+ * | `1..4` | columns 1 through 4 |
+ * | `4..1` | columns 4 through 1 |
+ * | `!1..2` | all columns expect the first two |
+ * | `Foo` | columns named `Foo` |
+ * | `/foo/i` | columns containing `foo` (ignoring case) |
+ *
+ * @module
+ */
+
 export { main as behead } from "./behead.js";
 export * as _behead from "./behead.js";
 export { main as merge } from "./merge.js";

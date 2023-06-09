@@ -1,3 +1,49 @@
+/**
+ * Annotate a PDF - add images, signatures and text.
+ *
+ * ### Examples
+ *
+ * Add a signature to a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "annotations": [
+ *     {
+ *       "type": "Image",
+ *       "page": 1,
+ *       "x": 477,
+ *       "y": 732,
+ *       "width": 122,
+ *       "height": 46,
+ *       "file": { "$file": "/assets/signature.png" }
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * Add text to a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "annotations": [
+ *     {
+ *       "type": "Text",
+ *       "page": 1,
+ *       "x": 0,
+ *       "y": 0,
+ *       "text": "Some text",
+ *       "font": "Times-Roman",
+ *       "font_size": 14
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import pdfr from "file:@jspawn/pdfr-wasm/pdfr.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type { AnnotationU } from "../picker/pdfAnnotations/index.js";
@@ -14,7 +60,6 @@ export type Input = {
   annotations: AnnotationU[];
 };
 
-/** Annotate a PDF. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({
     pdf: input.pdf,

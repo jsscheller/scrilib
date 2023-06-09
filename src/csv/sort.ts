@@ -1,3 +1,24 @@
+/**
+ * Sort the rows in a CSV.
+ *
+ * ### Examples
+ *
+ * Sort a CSV by a single column.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/sample.csv" },
+ *   "sort": {
+ *     "type": "Numeric",
+ *     "sort_columns": "1",
+ *     "reverse": true
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import { parseColumnSelection } from "./shared.js";
@@ -69,7 +90,6 @@ export type RandomSort = {
   type: Sort.Random;
 };
 
-/** Sort the rows in a CSV. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 

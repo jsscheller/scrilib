@@ -1,3 +1,40 @@
+/**
+ * Convert images to PDFs.
+ *
+ * ### Examples
+ *
+ * Convert an image to a PDF.
+ *
+ * ```
+ * {
+ *   "images": [{ "$file": "/assets/tree.jpg" }]
+ * }
+ * ```
+ *
+ * Convert an image to a searchable PDF.
+ *
+ * ```
+ * {
+ *   "images": [{ "$file": "/assets/tree.jpg" }],
+ *   "searchable": true
+ * }
+ * ```
+ *
+ * Convert multiple images to a single PDF.
+ *
+ * ```
+ * {
+ *   "images": [
+ *     { "$file": "/assets/tree.jpg" },
+ *     { "$file": "/assets/cat.png" }
+ *   ],
+ *   "single_pdf": true
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import tesseract from "file:@jspawn/tesseract-wasm/tesseract.wasm";
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import pdfr from "file:@jspawn/pdfr-wasm/pdfr.wasm";
@@ -24,7 +61,6 @@ export type Input = {
   single_pdf?: boolean;
 };
 
-/** Convert images to PDFs. */
 export async function main(input: Input): Promise<File[]> {
   const { images } = input;
   if (images.length === 0) {

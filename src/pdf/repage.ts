@@ -1,3 +1,66 @@
+/**
+ * Remove and reorder pages in a PDF.
+ *
+ * ### Examples
+ *
+ * Remove the first 2 pages from a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "select": {
+ *     "pages": "1..2"
+ *   },
+ *   "remove": true
+ * }
+ * ```
+ *
+ * Extract the first 2 pages of a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "select": {
+ *     "pages": "1..2"
+ *   }
+ * }
+ * ```
+ *
+ * Extract the last 2 pages of a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "select": {
+ *     "pages": "-2..-1"
+ *   }
+ * }
+ * ```
+ *
+ * Remove the last page from a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "select": {
+ *     "pages": "-1"
+ *   },
+ *   "remove": true
+ * }
+ * ```
+ *
+ * Reverse the order of pages in a PDF.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "reverse": true
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import { VirtualEnv } from "@jspawn/jspawn";
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
@@ -5,119 +68,41 @@ import type {
   Input as PickerInput,
   Output as PickerOutput,
 } from "../picker/pdfPages/index.js";
-import {
-  simplifyPageSelection,
-  parsePageSelection,
-  Filter,
-  getPageCount,
-} from "./shared.js";
+import { simplifyPageSelection, parsePageSelectionArray } from "./shared.js";
 
 export type Input = {
   /** The PDF to update. */
   pdf: File;
-  repage: RepageU;
+  select?: PageSelection;
+  /** Set to `true` to remove the selected pages instead of keeping them. */
+  remove?: boolean;
+  /** Set to `true` to reverse the final page order. */
+  reverse?: boolean;
 };
 
-export type RepageU = RepageKeep | RepageRemove | RepageReverse | RepageCustom;
-
-export const enum Repage {
-  Keep = "Keep",
-  Remove = "Remove",
-  Reverse = "Reverse",
-  Custom = "Custom",
-}
-
-/** Specify the pages to keep. */
-export type RepageKeep = {
-  type: Repage.Keep;
-  pages: PagesU;
-};
-
-/** Specify the pages to remove. */
-export type RepageRemove = {
-  type: Repage.Remove;
-  pages: PagesU;
-};
-
-/** Reverse page order. */
-export type RepageReverse = {
-  type: Repage.Reverse;
-};
-
-/** Specify a custom order/selection. */
-export type RepageCustom = {
-  type: Repage.Custom;
+export type PageSelection = {
   /**
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,6,4` | pages 1, 6, and 4 |
-   * | `3..7` | pages 3 through 7 inclusive |
-   * | `7..3` | pages 7, 6, 5, 4, and 3 |
-   * | `1..-1` | all pages |
-   * | `1,3,5..9,15..12` | pages 1, 3, 5, 6, 7, 8, 9, 15, 14, 13, and 12 |
-   * | `-1` | the last page |
-   * | `-1..-3` | the last three pages |
-   * | `5,7..9,12` | pages 5, 7, 8, 9, and 12 |
+   * Specify page(s) to select and the order in which they will appear using [page-selection syntax](./#page-selection-syntax) - leave blank to select all pages.
    *
    * {@picker pdfPages map_input=map_picker_input map_output=map_picker_output}
    */
-  pages: string;
+  pages?: string;
+  /** Set to `true` to select just the even pages. */
+  even?: boolean;
+  /** Set to `true` to select just the odd pages. */
+  odd?: boolean;
 };
 
-export type PagesU = PagesEven | PagesOdd | PagesFirst | PagesLast;
-
-export const enum Pages {
-  Even = "Even",
-  Odd = "Odd",
-  First = "First",
-  Last = "Last",
-}
-
-/** Select even pages. */
-export type PagesEven = {
-  type: Pages.Even;
-};
-
-/** Select odd pages. */
-export type PagesOdd = {
-  type: Pages.Odd;
-};
-
-/** Select the first `page_count` page(s). */
-export type PagesFirst = {
-  type: Pages.First;
-  page_count: integer;
-};
-
-/** Select the last `page_count` page(s). */
-export type PagesLast = {
-  type: Pages.Last;
-  page_count: integer;
-};
-
-/** Remove and reorder pages in a PDF. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 
-  const { repage } = input;
-  let pages;
-  switch (repage.type) {
-    case Repage.Keep:
-      pages = await parsePages(repage.pages, paths.pdf, true, venv);
-      break;
-    case Repage.Remove:
-      pages = await parsePages(repage.pages, paths.pdf, false, venv);
-      break;
-    case Repage.Reverse:
-      pages = "z-1";
-      break;
-    case Repage.Custom:
-      pages = await parsePageSelection(repage.pages, paths.pdf, venv);
-      break;
-  }
-
+  const pages = await parseSelection(
+    input.select,
+    paths.pdf,
+    !!input.remove,
+    !!input.reverse,
+    venv
+  );
   const out = outPath(paths.pdf, { suffix: "-repaged" });
 
   await venv.run(qpdf, [
@@ -133,53 +118,35 @@ export async function main(input: Input): Promise<File> {
   return readFile(out, venv);
 }
 
-async function parsePages(
-  pages: PagesU,
+async function parseSelection(
+  sel: PageSelection = {},
   path: string,
-  keep: boolean,
+  remove: boolean,
+  reverse: boolean,
   venv: VirtualEnv
 ): Promise<string> {
-  let sel, filter;
-  if (keep) {
-    switch (pages.type) {
-      case Pages.Even:
-        sel = "1..-1";
-        filter = Filter.Even;
-        break;
-      case Pages.Odd:
-        sel = "1..-1";
-        filter = Filter.Odd;
-        break;
-      case Pages.First:
-        sel = `1..${pages.page_count}`;
-        break;
-      case Pages.Last:
-        sel = `-${pages.page_count}..-1`;
-        break;
-    }
-  } else {
-    let pageCount;
-    switch (pages.type) {
-      case Pages.Even:
-        sel = "1..-1";
-        filter = Filter.Odd;
-        break;
-      case Pages.Odd:
-        sel = "1..-1";
-        filter = Filter.Even;
-        break;
-      case Pages.First:
-        pageCount = await getPageCount(path, venv);
-        sel = `${pageCount - pages.page_count}..-1`;
-        break;
-      case Pages.Last:
-        pageCount = await getPageCount(path, venv);
-        sel = `1..${pageCount - pages.page_count}`;
-        break;
-    }
+  let pages = await parsePageSelectionArray(sel.pages || "1..-1", path, venv);
+
+  if (sel.even) {
+    pages = pages.filter((x) => x % 2 === 0);
+  } else if (sel.odd) {
+    pages = pages.filter((x) => x % 2 !== 0);
   }
 
-  return parsePageSelection(sel, path, venv, filter);
+  if (remove) {
+    const allPages = await parsePageSelectionArray("1..-1", path, venv);
+    for (const removePage of pages) {
+      const index = allPages.indexOf(removePage);
+      allPages.splice(index, 1);
+    }
+    pages = allPages;
+  }
+
+  if (reverse) {
+    pages.reverse();
+  }
+
+  return pages.join(",");
 }
 
 export async function map_picker_input({
@@ -190,7 +157,7 @@ export async function map_picker_input({
   return {
     pdfs: [pdf],
     allow_move: true,
-    allow_remove: true,
+    allow_select: true,
   };
 }
 

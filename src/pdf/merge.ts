@@ -1,3 +1,43 @@
+/**
+ * Combine multiple PDFs into one.
+ *
+ * ### Examples
+ *
+ * Combine the first 2 pages of each PDF into a single PDF.
+ *
+ * ```
+ * {
+ *   "chunks": [
+ *     {
+ *       "pdf": { "$file": "/assets/sample.pdf" },
+ *       "pages": "1..2"
+ *     },
+ *     {
+ *       "pdf": { "$file": "/assets/peyton-jones.pdf" },
+ *       "pages": "1..2"
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * Join 2 PDF files.
+ *
+ * ```
+ * {
+ *   "chunks": [
+ *     {
+ *       "pdf": { "$file": "/assets/sample.pdf" }
+ *     },
+ *     {
+ *       "pdf": { "$file": "/assets/peyton-jones.pdf" }
+ *     }
+ *   ]
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type {
@@ -10,20 +50,7 @@ export type Input = {
   /**
    * A list of PDF files to combine.
    *
-   * For each chunk, specify the `pages` to select from the PDF (leave blank for all pages).
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,6,4` | pages 1, 6, and 4 |
-   * | `3..7` | pages 3 through 7 inclusive |
-   * | `7..3` | pages 7, 6, 5, 4, and 3 |
-   * | `1..-1` | all pages |
-   * | `1,3,5..9,15..12` | pages 1, 3, 5, 6, 7, 8, 9, 15, 14, 13, and 12 |
-   * | `-1` | the last page |
-   * | `-1..-3` | the last three pages |
-   * | `5,7..9,12` | pages 5, 7, 8, 9, and 12 |
+   * For each chunk, optionally specify the `pages` to select using [page-selection syntax](./#page-selection-syntax).
    *
    * {@picker pdfPages map_input=map_chunks_picker_input map_output=map_chunks_picker_output}
    */
@@ -36,7 +63,6 @@ export type Chunk = {
   pages?: string;
 };
 
-/** Combine PDFs into one. */
 export async function main(input: Input): Promise<File> {
   const { chunks } = input;
   if (chunks.length === 0) {

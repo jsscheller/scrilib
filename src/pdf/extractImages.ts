@@ -1,3 +1,20 @@
+/**
+ * Extract images from a PDF.
+ *
+ * ### Examples
+ *
+ * Extract the images from a PDF file - use `min_width` to ignore small images.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "min_width": 400
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import pdfr from "file:@jspawn/pdfr-wasm/pdfr.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -14,7 +31,6 @@ export type Input = {
   min_area?: integer;
 };
 
-/** Extract images from a PDF. */
 export async function main(input: Input): Promise<File[]> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 

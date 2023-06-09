@@ -1,3 +1,23 @@
+/**
+ * Split a single PDF into multiple PDFs.
+ *
+ * ### Examples
+ *
+ * Split a PDF into 2-page chunks.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "split": {
+ *     "type": "Fixed",
+ *     "chunk_size": 2
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type {
@@ -30,30 +50,13 @@ export type FixedSplit = {
 export type CustomSplit = {
   type: SplitMethod.Custom;
   /**
-   * Specify pages for each chunk.
-   *
-   * - A number preceded by `r` counts from the end, so `r1` is the last page, `r2` is the second-to-last page, etc.
-   * - The letter `z` represents the last page and is the same as `r1`.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,6,4` | pages 1, 6, and 4 |
-   * | `3..7` | pages 3 through 7 inclusive |
-   * | `7..3` | pages 7, 6, 5, 4, and 3 |
-   * | `1..-1` | all pages |
-   * | `1,3,5..9,15..12` | pages 1, 3, 5, 6, 7, 8, 9, 15, 14, 13, and 12 |
-   * | `-1` | the last page |
-   * | `-1..-3` | the last three pages |
-   * | `5,7..9,12` | pages 5, 7, 8, 9, and 12 |
+   * Specify pages for each chunk using [page-selection syntax](./#page-selection-syntax).
    *
    * {@picker pdfPages map_input=map_picker_input map_output=map_picker_output}
    */
   chunks: string[];
 };
 
-/** Split a single PDF into multiple PDFs. */
 export async function main(input: Input): Promise<File[]> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 

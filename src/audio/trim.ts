@@ -1,33 +1,34 @@
+/**
+ * Trim an audio file.
+ *
+ * ### Examples
+ *
+ * Combine two audio files.
+ *
+ * ```
+ * {
+ *   "audio": { "$file": "/assets/sample.ogg" },
+ *   "end_time": 2
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import ffmpeg from "file:@jspawn/ffmpeg-wasm/ffmpeg.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
 export type Input = {
-  /**
-   * The audio file to trim.
-   *
-   * Duration/start/end time should have the following format: `[-][HH:]MM:SS[.m...]` or `[-]S+[.m...][s|ms|us]`.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `55` | 55-seconds |
-   * | `0.2` | 0.2-seconds |
-   * | `200ms` | 200-milliseconds |
-   * | `00:04:15` | 4-minutes and 15-seconds |
-   * | `02:04:05` | 2-hours, 4-minutes and 5-seconds |
-   * | `00:00:05.500` | 5-seconds and 500-milliseconds (half-second) |
-   */
+  /** The audio file to trim. */
   audio: File;
-  /** Defauts to the start of the audio file. */
+  /** The start time in [time-duration syntax](./#time-duration-syntax). Defauts to the start of the audio file. */
   start_time?: string;
-  /** Defauts to the end of the audio file. */
+  /** The end time in [time-duration syntax](./#time-duration-syntax). Defauts to the end of the audio file. */
   end_time?: string;
-  /** Cannot be specified with `end_time` */
+  /** Instead of specifying an `end_time`, specify the `duration` in [time-duration syntax](./#time-duration-syntax). */
   duration?: string;
 };
 
-/** Trim an audio file. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({
     audio: input.audio,

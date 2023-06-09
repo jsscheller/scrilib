@@ -1,25 +1,39 @@
+/**
+ * Combine audio files.
+ *
+ * ### Examples
+ *
+ * Combine two audio files.
+ *
+ * ```
+ * {
+ *   "chunks": [
+ *     {
+ *       "audio": { "$file": "/assets/sample.ogg" },
+ *       "end_time": "2"
+ *     },
+ *     {
+ *       "audio": { "$file": "/assets/sample.ogg" },
+ *       "start_time": "2",
+ *       "end_time": "8"
+ *     }
+ *   ],
+ *   "format": {
+ *     "type": "MP3"
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import ffmpeg from "file:@jspawn/ffmpeg-wasm/ffmpeg.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type { FormatU, CodecU } from "./convert.js";
 import { pushFormatArgs } from "./shared.js";
 
 export type Input = {
-  /**
-   * A list of audio files to combine
-   *
-   * `start_time/end_time/duration` should use the following syntax.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `55` | 55-seconds |
-   * | `0.2` | 0.2-seconds |
-   * | `200ms` | 200-milliseconds |
-   * | `00:04:15` | 4-minutes and 15-seconds |
-   * | `02:04:05` | 2-hours, 4-minutes and 5-seconds |
-   * | `00:00:05.500` | 5-seconds and 500-milliseconds (half-second) |
-   */
+  /** A list of audio files to combine */
   chunks: Chunk[];
   /**
    * Defaults to the format of the first chunk.
@@ -34,15 +48,14 @@ export type Input = {
 
 export type Chunk = {
   audio: File;
-  /** Defauts to the start of the audio file. */
+  /** The start time for this chunk in [time-duration syntax](./#time-duration-syntax). Defauts to the start of the audio file. */
   start_time?: string;
-  /** Defauts to the end of the audio file. */
+  /** The end time for this chunk in [time-duration syntax](./#time-duration-syntax). Defauts to the end of the audio file. */
   end_time?: string;
-  /** Cannot be specified with `end_time` */
+  /** Instead of specifying an `end_time`, specify the `duration` in [time-duration syntax](./#time-duration-syntax). */
   duration?: string;
 };
 
-/** Combine audio files. */
 export async function main(input: Input): Promise<File> {
   if (input.chunks.length === 0) {
     throw "expected at least one chunk";

@@ -1,3 +1,19 @@
+/**
+ * Remove the header from a CSV.
+ *
+ * ### Examples
+ *
+ * Remove the header row from a CSV file.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/us-states.csv" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -6,7 +22,6 @@ export type Input = {
   csv: File;
 };
 
-/** Remove the header from a CSV. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 

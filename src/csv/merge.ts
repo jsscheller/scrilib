@@ -1,3 +1,39 @@
+/**
+ * Merge CSV files.
+ *
+ * ### Examples
+ *
+ * Join CSV files by column.
+ *
+ * ```
+ * {
+ *   "csvs": [
+ *     { "$file": "/assets/us-states.csv" },
+ *     { "$file": "/assets/sample.csv" }
+ *   ],
+ *   "merge": {
+ *     "type": "Column"
+ *   }
+ * }
+ * ```
+ *
+ * Join CSV files by row.
+ *
+ * ```
+ * {
+ *   "csvs": [
+ *     { "$file": "/assets/sample.csv" },
+ *     { "$file": "/assets/sample.csv" }
+ *   ],
+ *   "merge": {
+ *     "type": "Row"
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -28,7 +64,6 @@ export type RowMerge = {
   no_headers?: boolean;
 };
 
-/** Merge CSV files. */
 export async function main(input: Input): Promise<File> {
   if (input.csvs.length === 0) {
     throw "expected at least one input file";

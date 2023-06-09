@@ -1,3 +1,20 @@
+/**
+ * Update a CSV so each record has the same number of columns - accomplished by inserting empty values.
+ *
+ * ### Examples
+ *
+ * Pad a CSV to have matching column lengths.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/sample.csv" },
+ *   "length": 4
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -8,7 +25,6 @@ export type Input = {
   length?: integer;
 };
 
-/** Update a CSV so each record has the same number of columns - accomplished by inserting empty values. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 

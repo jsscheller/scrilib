@@ -1,3 +1,20 @@
+/**
+ * Determine differences between two CSV files.
+ *
+ * ### Examples
+ *
+ * Find differences between two CSV files.
+ *
+ * ```
+ * {
+ *   "first": { "csv": { "$file": "/assets/sample.csv" } },
+ *   "second": { "csv": { "$file": "/assets/sample-ext.csv" } }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile } from "../util.js";
 import { parseColumnSelection } from "./shared.js";
@@ -5,35 +22,9 @@ import { parseColumnSelection } from "./shared.js";
 export type Input = {
   first: DiffFile;
   second: DiffFile;
-  /**
-   * The column(s) used to uniquely identify a record - defaults to the first column. This matters when determining if a record was modified or deleted.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** The column(s) used to uniquely identify a record specified using [column-selection syntax](./#column-selection-syntax) - defaults to the first column. This matters when determining if a record was modified or deleted. */
   key_columns?: string;
-  /**
-   * Optionally specify column(s) to use when sorting the final results.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** Optionally specify column(s) to use when sorting the final results - specified using [column-selection syntax](./#column-selection-syntax). */
   sort_columns?: string;
 };
 
@@ -43,7 +34,6 @@ export type DiffFile = {
   no_headers?: boolean;
 };
 
-/** Determine differences between two CSV files. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({
     first: input.first.csv,

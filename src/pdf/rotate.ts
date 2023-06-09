@@ -1,91 +1,93 @@
+/**
+ * Rotate pages in a PDF.
+ *
+ * ### Examples
+ *
+ * Rotate all pages in a PDF by 90 degrees.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "rotations": [{
+ *     "angle": 90,
+ *     "relative": true
+ *   }]
+ * }
+ * ```
+ *
+ * Set the rotation of the last page to 180 degrees.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "rotations": [{
+ *     "select": { "pages": "-1" },
+ *     "angle": 180
+ *   }]
+ * }
+ * ```
+ *
+ * Rotate the even pages of a PDF by 90 degrees.
+ *
+ * ```
+ * {
+ *   "pdf": { "$file": "/assets/sample.pdf" },
+ *   "rotations": [{
+ *     "select": { "even": true },
+ *     "angle": 90,
+ *     "relative": true
+ *   }]
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qpdf from "file:@jspawn/qpdf-wasm/qpdf.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import type {
   Input as PickerInput,
   Output as PickerOutput,
 } from "../picker/pdfPages/index.js";
-import { simplifyPageSelection, parsePageSelection } from "./shared.js";
+import { simplifyPageSelection, parsePageSelectionArray } from "./shared.js";
+import { VirtualEnv } from "@jspawn/jspawn";
 
 export type Input = {
   /** The PDF to rotate. */
   pdf: File;
-  rotate: RotateU;
-};
-
-export type RotateU = RelativeRotate | FixedRotate | CustomRotate;
-
-export const enum Rotate {
-  Relative = "Relative",
-  Fixed = "Fixed",
-  Custom = "Custom",
-}
-
-/** Update the rotation of each page relative to its current rotation. */
-export type RelativeRotate = {
-  type: Rotate.Relative;
-  /** Rotation angle in degrees. */
-  angle: integer;
-};
-
-/** Set the rotation of each page to a fixed angle - disregarding its current rotation. */
-export type FixedRotate = {
-  type: Rotate.Fixed;
-  /** Rotation angle in degrees. */
-  angle: integer;
-};
-
-/** Specify the rotation for each page/page-range. */
-export type CustomRotate = {
-  type: Rotate.Custom;
-  /**
-   * `pages` should be specified using the following syntax:
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,6,4` | pages 1, 6, and 4 |
-   * | `3..7` | pages 3 through 7 inclusive |
-   * | `7..3` | pages 7, 6, 5, 4, and 3 |
-   * | `1..-1` | all pages |
-   * | `1,3,5..9,15..12` | pages 1, 3, 5, 6, 7, 8, 9, 15, 14, 13, and 12 |
-   * | `-1` | the last page |
-   * | `-1..-3` | the last three pages |
-   * | `5,7..9,12` | pages 5, 7, 8, 9, and 12 |
-   *
-   * {@picker pdfPages map_input=map_picker_input map_output=map_picker_output}
-   */
+  /** {@picker pdfPages map_input=map_rotations_picker_input map_output=map_rotations_picker_output} */
   rotations: PageRotation[];
 };
 
 export type PageRotation = {
-  pages: string;
+  select?: PageSelection;
   /** Rotation angle in degrees. */
   angle: integer;
   /** Rotate the page relative to its current rotation. */
   relative?: boolean;
 };
 
-/** Rotate pages in a PDF. */
+export type PageSelection = {
+  /**
+   * Specify page(s) to rotate using [page-selection syntax](./#page-selection-syntax) - leave blank to select all pages.
+   *
+   * {@picker pdfPages map_input=map_pages_picker_input map_output=map_pages_picker_output}
+   */
+  pages?: string;
+  /** Set to `true` to select just the even pages. */
+  even?: boolean;
+  /** Set to `true` to select just the odd pages. */
+  odd?: boolean;
+};
+
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ pdf: input.pdf });
 
-  const { rotate } = input;
-  let rotateArgs = [];
-  switch (rotate.type) {
-    case Rotate.Custom:
-      for (const rot of rotate.rotations) {
-        const relative = rot.relative ? "+" : "";
-        const sel = await parsePageSelection(rot.pages, paths.pdf, venv);
-        rotateArgs.push(`--rotate=${relative}${normAngle(rot.angle)}:${sel}`);
-      }
-      break;
-    case Rotate.Relative:
-      rotateArgs = [`--rotate=+${normAngle(rotate.angle)}:1-z`];
-      break;
-    case Rotate.Fixed:
-      rotateArgs = [`--rotate=${normAngle(rotate.angle)}:1-z`];
-      break;
+  const rotateArgs = [];
+  for (const rot of input.rotations) {
+    const relative = rot.relative ? "+" : "";
+    const sel = await parseSelection(rot.select, paths.pdf, venv);
+    rotateArgs.push(`--rotate=${relative}${normAngle(rot.angle)}:${sel}`);
   }
 
   const out = outPath(paths.pdf, { suffix: "-rotated" });
@@ -103,13 +105,29 @@ export async function main(input: Input): Promise<File> {
   return readFile(out, venv);
 }
 
+async function parseSelection(
+  sel: PageSelection = {},
+  path: string,
+  venv: VirtualEnv
+): Promise<string> {
+  let pages = await parsePageSelectionArray(sel.pages || "1..-1", path, venv);
+
+  if (sel.even) {
+    pages = pages.filter((x) => x % 2 === 0);
+  } else if (sel.odd) {
+    pages = pages.filter((x) => x % 2 !== 0);
+  }
+
+  return pages.join(",");
+}
+
 function normAngle(deg: number): number {
   deg = deg % 360;
   if (deg < 0) deg += 360;
   return deg;
 }
 
-export async function map_picker_input({
+export async function map_rotations_picker_input({
   pdf,
 }: {
   pdf: File;
@@ -120,7 +138,7 @@ export async function map_picker_input({
   };
 }
 
-export async function map_picker_output({
+export async function map_rotations_picker_output({
   output,
 }: {
   output: PickerOutput;
@@ -144,4 +162,23 @@ export async function map_picker_output({
     });
   }
   return rotations;
+}
+
+export async function map_pages_picker_input({
+  pdf,
+}: {
+  pdf: File;
+}): Promise<PickerInput> {
+  return {
+    pdfs: [pdf],
+    allow_select: true,
+  };
+}
+
+export async function map_pages_picker_output({
+  output,
+}: {
+  output: PickerOutput;
+}): Promise<string> {
+  return simplifyPageSelection(output.pdfs[0]!.pages.map((x) => x.page));
 }

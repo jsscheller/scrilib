@@ -1,3 +1,19 @@
+/**
+ * Count the number of records in a CSV file. The count does not include the header row by default.
+ *
+ * ### Examples
+ *
+ * Count the number of records in a CSV.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/sample.csv" }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv } from "../util.js";
 
@@ -8,7 +24,6 @@ export type Input = {
   no_headers?: boolean;
 };
 
-/** Count the number of records in a CSV file. The count does not include the header row by default. */
 export async function main(input: Input): Promise<integer> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 

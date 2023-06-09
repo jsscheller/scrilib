@@ -1,3 +1,22 @@
+/**
+ * Fill empty values in a CSV.
+ *
+ * ### Examples
+ *
+ * Fill empty values in a CSV.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/us-states.csv" },
+ *   "fill": {
+ *     "type": "MostRecent"
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 import { parseColumnSelection } from "./shared.js";
@@ -6,20 +25,7 @@ export type Input = {
   /** The CSV file to fill. */
   csv: File;
   fill: FillU;
-  /**
-   * The column(s) to fill - defaults to all columns.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** Specify the column(s) to fill using [column-selection syntax](./#column-selection-syntax) - defaults to all columns. */
   columns?: string;
   /** Set to `true` to consider the first row when filling. */
   no_headers?: boolean;
@@ -53,7 +59,6 @@ export type StaticFill = {
   value: string;
 };
 
-/** Fill empty values in a CSV. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 

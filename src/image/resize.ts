@@ -1,3 +1,23 @@
+/**
+ * Resize an image by width, height, area, or a percentage.
+ *
+ * ### Examples
+ *
+ * Resize an image by width while maintaining its aspect ratio.
+ *
+ * ```
+ * {
+ *   "image": { "$file": "/assets/tree.jpg" },
+ *   "resize": {
+ *     "type": "Width",
+ *     "width": 100
+ *   }
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import magick from "file:@jspawn/imagemagick-wasm/magick.wasm";
 import { initVirtualEnv, readFile, outPath } from "../util.js";
 
@@ -134,7 +154,6 @@ export type PercentageResize = {
   percentage: integer;
 };
 
-/** Resize an image by width, height, area, or a percentage. */
 export async function main(input: Input): Promise<File> {
   const { venv, paths } = await initVirtualEnv({ image: input.image });
   const args = [paths.image, "-resize"];

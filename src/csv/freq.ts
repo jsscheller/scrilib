@@ -1,3 +1,20 @@
+/**
+ * Calculate the frequency of data in a CSV.
+ *
+ * ### Examples
+ *
+ * Sort a CSV by a single column.
+ *
+ * ```
+ * {
+ *   "csv": { "$file": "/assets/us-states.csv" },
+ *   "select": "/tax/i"
+ * }
+ * ```
+ *
+ * @module
+ */
+
 import qsv from "file:@jspawn/qsv-wasm/qsv.wasm";
 import { initVirtualEnv } from "../util.js";
 import { parseColumnSelection } from "./shared.js";
@@ -5,20 +22,7 @@ import { parseColumnSelection } from "./shared.js";
 export type Input = {
   /** The CSV file to analyze. */
   csv: File;
-  /**
-   * Select a subset of columns to analyze - all columns are analyzed by default.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** Select a subset of columns to analyze using [column-selection syntax](./#column-selection-syntax) - all columns are analyzed by default. */
   select?: string;
   /** Limit the output to a fixed number of values per column. Defaults to `10`. */
   limit?: integer;
@@ -34,7 +38,6 @@ export type Frequency = {
   count: integer;
 };
 
-/** Calculate the frequency of data in a CSV. */
 export async function main(input: Input): Promise<Frequency[]> {
   const { venv, paths } = await initVirtualEnv({ csv: input.csv });
 
