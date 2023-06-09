@@ -16,6 +16,7 @@ const entryPoints = [
   "src/picker/pdfAnnotations/index.ts",
   "src/picker/pdfPages/index.ts",
   "src/viewer/image/index.ts",
+  "src/viewer/pdf/index.ts",
 ];
 
 async function main() {
@@ -91,7 +92,7 @@ async function bundle(name, entryPoint) {
       bundle: true,
       write: true,
       format,
-      globalName: format === "iife" ? "main" : undefined,
+      globalName: format === "iife" ? "root" : undefined,
       plugins: [dirPlugin(includeDirs), filePlugin(includeFiles)],
     });
 
@@ -223,7 +224,7 @@ const filePlugin = (files) => ({
     build.onLoad({ filter: /.*/, namespace: "file-stub" }, async (args) => {
       let contents;
       if (process.env.BROWSER) {
-        contents = `export default "/${args.pluginData.exportPath}";`;
+        contents = `export default "./${args.pluginData.exportPath}";`;
       } else {
         contents = `export default ASSET_URL("${args.pluginData.exportPath}");`;
       }

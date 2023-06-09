@@ -11,7 +11,8 @@
     "build": "node scripts/build.js"
   },
   "dependencies": {
-    "@jspawn/jspawn": "^0.5.0"
+    "@jspawn/jspawn": "^0.5.0",
+    "pdfjs-dist": "^3.7.107"
   },
   "devDependencies": {
     "@jspawn/ffmpeg-wasm": "^0.0.1",

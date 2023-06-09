@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<body>
+  <style type="text/css">
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+  <iframe id="iframe" src="/out/viewer-pdf/index.html"></iframe>
+
+  <script type="application/javascript">
+    (async () => {
+      const pdf = await (await fetch("/assets/sample.pdf")).blob();
+      const input = { pdf };
+
+      const iframe = document.getElementById("iframe");
+      globalThis._window = iframe.contentWindow;
+      while (true) {
+        if (iframe.contentWindow.root) {
+          await iframe.contentWindow.root.init(input);
+          break;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+    })();
+  </script>
+</body>
