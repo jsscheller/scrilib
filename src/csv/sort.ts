@@ -42,20 +42,7 @@ export const enum Sort {
 /** Sort rows in alphabetic order. */
 export type AlphabeticSort = {
   type: Sort.Alphabetic;
-  /**
-   * Select the column(s) to use when sorting.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** Select the column(s) to use when sorting - specified using [column-selection syntax](./#column-selection-syntax). */
   sort_columns?: string;
   /** Disregard case when comparing. */
   ignore_case?: boolean;
@@ -66,20 +53,7 @@ export type AlphabeticSort = {
 /** Sort rows in numeric order. */
 export type NumericSort = {
   type: Sort.Numeric;
-  /**
-   * Select the column(s) to use when sorting.
-   *
-   * Examples:
-   *
-   * |  |  |
-   * | --- | --- |
-   * | `1,4` | first and fourth column |
-   * | `1..4` | columns 1 through 4 |
-   * | `4..1` | columns 4 through 1 |
-   * | `!1..2` | all columns expect the first two |
-   * | `Foo` | columns named `Foo` |
-   * | `/foo/i` | columns containing `foo` (ignoring case) |
-   */
+  /** Select the column(s) to use when sorting - specified using [column-selection syntax](./#column-selection-syntax). */
   sort_columns?: string;
   /** Rows are in ascending order (1 to 9) by default, set to `true` for descending order (9 to 1). */
   reverse?: boolean;
