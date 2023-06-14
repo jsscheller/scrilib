@@ -100,3 +100,9 @@ export function basename(file: FileSource): string {
     return file.name;
   }
 }
+
+export function extname(path: string): string {
+  const dot = path.lastIndexOf(".");
+  if (dot === -1) return "";
+  return path.slice(dot);
+}

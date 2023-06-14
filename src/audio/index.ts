@@ -57,3 +57,5 @@ export { main as trim } from "./trim.js";
 export * as _trim from "./trim.js";
 export { main as waveform } from "./waveform.js";
 export * as _waveform from "./waveform.js";
+export { main as compress } from "./compress.js";
+export * as _compress from "./compress.js";
