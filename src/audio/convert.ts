@@ -24,7 +24,7 @@ import { pushFormatArgs } from "./shared.js";
 export type Input = {
   /** The audio file to convert. */
   audio: File;
-  /** Each format is compatible with one or more codecs and an acceptable bitrate/sample-rate range. Leave these options blank to use default values which should produce acceptable output. */
+  /** Each format is compatible with one or more codecs and an acceptable bitrate/sample-rate range - see [here](./#codecs-bitrate-sample-rate) for more details. Leave these options blank to use default values which should produce acceptable output. */
   format: FormatU;
   codec?: CodecU;
   bitrate?: integer;
@@ -56,52 +56,42 @@ export const enum Format {
   WMA = "WMA",
 }
 
-/** Advanced Audio Coding - codec: `AAC`, bitrate: 32-320 kbps, sample rate: 8000-48000 Hz */
 export type AACFormat = {
   type: Format.AAC;
 };
 
-/** Audio Interchange File Format (lossless) - codecs: `PCM_S16BE` (default), `PCM_S24BE`, `PCM_S32BE`, bitrate: N/A, sample rate: 8000-192000 Hz */
 export type AIFFFormat = {
   type: Format.AIFF;
 };
 
-/** Free Lossless Audio Codec (lossless) - codec: `FLAC`, bitrate: N/A, sample rate: 8000-192000 Hz */
 export type FLACFormat = {
   type: Format.FLAC;
 };
 
-/** Audio-only MPEG-4 - codecs: `AAC` (default), `ALAC`, bitrate: 32-320 kbps (`AAC`), N/A (`ALAC`), sample rate: 8000-48000 Hz */
 export type M4AFormat = {
   type: Format.M4A;
 };
 
-/** Mobile Music File Format - codec: `ADPCM_YAMAHA`, bitrate: N/A, sample rate: 8000-48000 Hz */
 export type MMFFormat = {
   type: Format.MMF;
 };
 
-/** MPEG-1 or MPEG-2 Audio Layer III - codec: `LIBMP3LAME`, bitrate: 32-320 kbps, sample rate: 8000-48000 Hz */
 export type MP3Format = {
   type: Format.MP3;
 };
 
-/** Ogg Vorbis - codec: `LIBVORBIS`, bitrate: 64-500 kbps, sample rate: 8000-192000 Hz */
 export type OGGFormat = {
   type: Format.OGG;
 };
 
-/** Opus Audio Format - codec: `LIBOPUS`, bitrate: 6-510 kbps, sample rate: 8000-48000 Hz */
 export type OPUSFormat = {
   type: Format.OPUS;
 };
 
-/** Waveform Audio File Format (lossless) - codecs: `PCM_S16LE` (default), `PCM_S24LE`, `PCM_S32LE`, bitrate: N/A, sample rate: 8000-192000 Hz */
 export type WAVFormat = {
   type: Format.WAV;
 };
 
-/** Windows Media Audio - codec: `WMAV2`, bitrate: 48-192 kbps, sample rate: 8000-48000 Hz */
 export type WMAFormat = {
   type: Format.WMA;
 };
