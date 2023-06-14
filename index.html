@@ -12,12 +12,12 @@
       border: none;
     }
   </style>
-  <iframe id="iframe" src="/out/viewer-pdf/index.html"></iframe>
+  <iframe id="iframe" src="/out/viewer-audio/index.html"></iframe>
 
   <script type="application/javascript">
     (async () => {
-      const pdf = await (await fetch("/assets/sample.pdf")).blob();
-      const input = { pdf };
+      const file = await (await fetch("/assets/sample.mp3")).blob();
+      const input = { audio: file };
 
       const iframe = document.getElementById("iframe");
       globalThis._window = iframe.contentWindow;

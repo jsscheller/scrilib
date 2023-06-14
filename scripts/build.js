@@ -17,6 +17,7 @@ const entryPoints = [
   "src/picker/pdfPages/index.ts",
   "src/viewer/image/index.ts",
   "src/viewer/pdf/index.ts",
+  "src/viewer/audio/index.ts",
 ];
 
 async function main() {
