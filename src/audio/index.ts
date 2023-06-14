@@ -17,6 +17,20 @@
  * | `02:04:05` | 2-hours, 4-minutes and 5-seconds |
  * | `00:00:05.500` | 5-seconds and 500-milliseconds (half-second) |
  *
+ * ### [Audio format overview](#audio-format-overview)
+ *
+ * Formats like AAC, MP3, OGG, OPUS, and WMA are all lossy formats, which means that they discard some
+ * audio information to achieve smaller file sizes. They're typically used for music or any situation
+ * where you want a good balance between file size and audio quality.
+ *
+ * Formats like AIFF, FLAC, and WAV, on the other hand, are lossless formats, which means they
+ * reproduce the audio exactly as it was in the original source, at the cost of creating larger files.
+ * They're typically used in professional audio and video production, or any situation where you need
+ * the highest possible audio quality.
+ *
+ * MMF is a mobile sound format and has quite low bitrates in comparison to other formats. It's
+ * primarily used for ringtones and mobile audio.
+ *
  * ### [Codecs, bitrate and sample-rate for audio formats](#codecs-bitrate-sample-rate)
  *
  * | Format | Codecs | Bitrate | Sample-rate |

@@ -24,7 +24,11 @@ import { pushFormatArgs } from "./shared.js";
 export type Input = {
   /** The audio file to convert. */
   audio: File;
-  /** Each format is compatible with one or more codecs and an acceptable bitrate/sample-rate range - see [here](./#codecs-bitrate-sample-rate) for more details. Leave these options blank to use default values which should produce acceptable output. */
+  /**
+   * See [here](./#audio-format-overview) for an overview of the different audio formats.
+   *
+   * Each format is compatible with one or more codecs and an acceptable bitrate/sample-rate range - see [here](./#codecs-bitrate-sample-rate) for more details. Leave these options blank to use default values which should produce acceptable output.
+   */
   format: FormatU;
   codec?: CodecU;
   bitrate?: integer;
