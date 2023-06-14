@@ -26,3 +26,5 @@ export { main as merge } from "./merge.js";
 export * as _merge from "./merge.js";
 export { main as trim } from "./trim.js";
 export * as _trim from "./trim.js";
+export { main as waveform } from "./waveform.js";
+export * as _waveform from "./waveform.js";

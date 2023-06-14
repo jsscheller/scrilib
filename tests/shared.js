@@ -20,7 +20,7 @@ export function runExamples(mod, it) {
         await fs.writeFile(path.join(outDir, out.name), Buffer.from(buf));
       }
     };
-    if (eg.only) {
+    if (eg.input.$only) {
       it.only(description, callback);
     } else {
       it(description, callback);
